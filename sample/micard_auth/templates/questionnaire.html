@@ -3,8 +3,7 @@
 {% block body %}
 <h1>Hi, <a href="mailto:{{user.email}}">{{user.first_name}} {{user.last_name}}</a>.</h1>
 {% if pay_prompt%}
-    <p>We've sent your medical history over to miCARD. You should <a href="https://micard.com/members/purchase">buy a card.</a></p>
-    <p>Here is a copy for your records:</p>
+    <p>Below is a copy of your medical history stored with miCARD. You should <a href="https://micard.com/members/purchase">buy a card.</a></p>
     <h2>{{user.first_name}} {{user.last_name}}</h2>
     <ul>
     {% for condition in history %}
