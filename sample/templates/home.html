@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+    <h1>Welcome</h1>
+    <p>This is a sample miCARD partner site that uses the miCARD API.</p>
+    <p>Authorize us to access your miCARD account or create a new account by clicking below.</p>
+    <ul>
+        <li><a href="{% url register %}">I do not have a miCARD account</a></li>
+        <li><a href="{% url login %}">I already have a miCARD account</a></li>
+    </ul>
+{% endblock%}

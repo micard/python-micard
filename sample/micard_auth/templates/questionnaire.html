@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>Hi, <a href="mailto:{{user.email}}">{{user.first_name}} {{user.last_name}}</a>.</h1>
+{% if pay_prompt%}
+    <p>We've sent your medical history over to miCARD. You should <a href="https://micard.com/members/purchase">buy a card.</a></p>
+    <p>Here is a copy for your records:</p>
+    <h2>{{user.first_name}} {{user.last_name}}</h2>
+    <ul>
+    {% for condition in history %}
+        <li>{{condition.snomed.preferred_term}} ({{condition.snomed.abbreviate}}){% if condition.notes %}- {{condition.notes}}{% endif %}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <h2>Medical Questionnaire</h2>
+    <form method="POST">
+    {% for question in questions %}
+        {% ifchanged %}<h3>{{question.category_display}}</h3>{% endifchanged %}
+        <h4>{{question.question}}</h4>
+        {% for response in question.responses %}
+            <p><input type="checkbox" name="{{question.form_name}}" value="{{response.id}}" id="con{{response.id}}" /> <label for="con{{response.id}}">{{response.preferred_term}} ({{response.abbreviate}})</label></p>
+        {% endfor %}
+    {% endfor %}
+    {% csrf_token %}
+    <p><input type="submit" value="Submit" />
+    </form>
+{% endif %}
+{% endblock %}
