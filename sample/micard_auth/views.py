@@ -104,11 +104,12 @@ def questionnaire(request):
     #
     # Seriously. Don't do it like this.
     pay_prompt = False
-    history = None
-    if request.POST:
+    history = api.history()
+    if request.POST and not history:
         history = api.create_medical_history(**request.POST)
-        pay_prompt = True
     
+    if history:
+        pay_prompt = True
     
     user_info = api.me()
     questions = api.get_questions()
