@@ -78,10 +78,12 @@ def method_factory(**config):
                 
                 try:
                     if not is_iterable(arg):
-                        post_body.append((self.allowed_param[idx], arg))
+                        post_body.append((self.allowed_param[idx], convert_to_utf8_str(arg)))
                     else:
+                        self.parameters[self.allowed_param[idx]] = []
                         for value in arg:
-                            post_body.append((self.allowed_param[idx], value))
+                            post_body.append((self.allowed_param[idx], convert_to_utf8_str(value)))
+                            self.parameters[self.allowed_param[idx]].append(convert_to_utf8_str(arg))
                 except:
                     raise MicardError('Too many parameters supplied!')
                 
@@ -90,11 +92,15 @@ def method_factory(**config):
                     continue
                 
                 if not is_iterable(arg):
-                    post_body.append((k, arg))
+                    post_body.append((k, convert_to_utf8_str(arg)))
+                    self.parameters[k] = convert_to_utf8_str(arg)
                 else:
+                    self.parameters[k]=[]
                     for value in arg:
-                        post_body.append((k,value))
+                        post_body.append((k,convert_to_utf8_str(value)))
+                        self.parameters[k].append(convert_to_utf8_str(value))
             
+            post_body.sort()
             self.post_data = post_body
             
         def build_parameters(self, args, kargs):
@@ -119,7 +125,7 @@ def method_factory(**config):
         def execute(self):
             # Build the request URL
             url = self.path
-            if len(self.parameters):
+            if len(self.parameters) and self.method != 'POST':
                 url = '%s?%s' % (url, urllib.urlencode(self.parameters))
             
             if self.api.host.startswith('https'):
@@ -136,12 +142,12 @@ def method_factory(**config):
             if self.api.auth and self.require_auth:
                 self.api.auth.apply_auth(
                         self.api.host + url,
-                        self.method, self.headers, data
+                        self.method, self.headers, self.parameters
                 )
 
             # Execute request
             try:
-                conn.request(self.method, url, headers=self.headers, body=urllib.urlencode(self.post_data))
+                conn.request(self.method, url, headers=self.headers, body=urllib.urlencode(data))
                 resp = conn.getresponse()
             except Exception, e:
                 raise MicardError('Failed to send request: %s' % e)
