@@ -26,7 +26,7 @@
 from urllib2 import Request, urlopen
 import base64
 
-from oauth import oauth
+import oauth
 from error import MicardError
 
 class OAuthHandler(object):
