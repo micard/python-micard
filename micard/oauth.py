@@ -234,8 +234,10 @@ class OAuthRequest(object):
             # 1.0a/9.1.1 states that kvp must be sorted by key, then by value,
             # so we unpack sequence values into multiple items for sorting.
             if hasattr(value, '__iter__'):
-                key_values.extend((key, item) for item in value)
+                key_values.extend((key, escape(item)) for item in value)
             else:
+                if value != None and not isinstance(value, int):
+                    value = escape(value)
                 key_values.append((key, value))
         # Sort lexicographically, first after key, then after value.
         key_values.sort()
