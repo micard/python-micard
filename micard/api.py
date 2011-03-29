@@ -32,6 +32,12 @@ class API(object):
         method = 'POST',
         require_auth = True
     )
+
+    create_simple_history = method_factory(
+        path = '/me/simple_history.json',
+        method = 'POST',
+        require_auth = True
+    )
     
     create_registration_supplement = method_factory(
         path = '/supplement_registration.json',

@@ -38,6 +38,18 @@ class APITests(unittest.TestCase):
     def test_history(self):
         history = self.api.history()
     
+    def test_create_simple_history(self):
+        from micard.error import MicardError
+        questions = self.api.get_questions()
+        
+        responses = []
+        for question in questions:
+            [responses.append(x['id']) for x in question['responses']]
+        
+        responses.extend((100419000, 66986005))
+        history = self.api.create_simple_history(condition=responses)
+        self.assertEqual(len(history), len(responses))
+        
     def test_create_medical_history(self):
         from micard.error import MicardError
         
